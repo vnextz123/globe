@@ -1,0 +1,42 @@
+1. There is no Push to wordress button.
+
+2.
+When I translated the generated content from Hindi again to ENglish. Below is the results. It does not looks great.
+
+The actual fetched title is Trump threatening existence of GST, says Congress. But the generted hindi articles when translated showing the title as #Power of National Sovereignty: 5 Best Practices.
+
+This is a news article not a review article. Please make it better. Also, the article must easily readable even by 4th grade student. So, article must be simple and engaging.
+
+Also, I dont want the generated article to have # Contents List 1,2,3,4,5,6 etc... like table of contents and INtroduction etc...
+
+Or we can provide option to set if it is News article or Review article or Blog post. Also provide option if Table of content section is needed or not. Based this the article will be generated.
+
+
+#Power of National Sovereignty: 5 Best Practices
+
+# Contents List
+1. [sectation] (#contraction)
+2. [The importance of national sovereignty]
+3. [International Relations and National sovereignty]
+4. [President Trump's role]
+5. [Indian Vision and Jai Ram Ramesh] (#Indian Viewpoint - and - Jai Ram - Ramesh)
+6. [Forture] (#Forture)
+
+- - -
+
+Introduction
+The existence of national sovereignty is of utmost importance to any nation. In today's global scenario, when questions arise on the sovereignty of the nation, such as the statement by the Congress that Trump's actions are endangering national sovereignty, it forces us to think what its impact can ultimately be.
+
+Oh! [National sovereignty]. jpg
+
+Importance of national sovereignty
+The importance of national sovereignty is that it helps every nation maintain its integrity and control. Without it, no country is free of its policies and actions
+
+President Trump's role
+The decisions taken during President Trump's tenure and his international policy have been repeatedly debated. Especially in the context of India, his policy decisions have been faced criticism by leaders like Rahul Gandhi.
+
+Jai Ram Ramesh
+Congress general secretary Jairam Ramesh has raised an important question on whether Prime Minister Modi, whom he calls Vishvaguru, will clarify his stand on the core issue. It is important to know what decisions will be taken in a country like India in this context. [For more details see here]
+
+# conclusion
+National sovereignty is a highly complex subject affecting not only external but also internal policies. In todays times, every country has to be very vigilant to maintain it, otherwise it can weaken its position globally. [ Read more on International Relations] (https://exampleternlink.com)
