@@ -218,7 +218,8 @@ elif st.session_state.page == "bulk article generator":
                         st.text_area("Content", article['content'], height=200)
 
                         # Add WordPress publish button
-                        if st.button("Publish to WordPress", key=f"publish_{article['id']}_{article['title'][:20]}"):
+                        article_key = f"{idx}_{article['title'][:20]}"
+                        if st.button("Publish to WordPress", key=f"publish_{article_key}"):
                             if 'wordpress_api' in st.session_state and st.session_state.wordpress_api:
                                 try:
                                     response = st.session_state.wordpress_api.create_post(article)
