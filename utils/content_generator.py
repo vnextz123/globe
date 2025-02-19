@@ -68,7 +68,7 @@ class ContentGenerator:
                 keywords = [keyword_response.choices[0].message.content.strip()]
 
             prompt = f"""
-            Create an SEO-optimized {article_type} in {language} based on this content:
+            Create an SEO-optimized {article_type} article in {language} based on this content. {f'Include a table of contents.' if include_toc else 'Do not include a table of contents.'} For news articles, focus on factual reporting and avoid unnecessary formatting:
             Title: {source_content['title']}
             Source Content: {source_content['content']}
             Focus Keyword: {keywords[0] if keywords else ''}
@@ -113,7 +113,7 @@ class ContentGenerator:
                - Have 1% keyword density
                - Include focus keyword in H2/H3 subheadings
                - Use short paragraphs
-               - Include table of contents
+               - Include table of contents if requested
                - Include both internal and external dofollow links
                - Include images with focus keyword in alt text
                

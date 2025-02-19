@@ -280,11 +280,24 @@ elif st.session_state.page == "bulk article generator":
             else:
                 for article in filtered_articles:
                     with st.expander(f"{article['title']} - {article['date']}"):
-                        st.write(f"Status: {article['status']}")
-                        st.write(f"Word Count: {article['word_count']}")
-                        st.write(f"Date: {article['date']}")
-                        st.text_area("Content", article['content'], height=200)
-
-                        if st.button("Delete", key=f"delete_{article['id']}_{article['title'][:20]}"):
-                            st.session_state.generated_articles.remove(article)
-                            st.rerun()
+                        col1, col2 = st.columns([3, 1])
+                        with col1:
+                            st.write(f"Status: {article['status']}")
+                            st.write(f"Word Count: {article['word_count']}")
+                            st.write(f"Date: {article['date']}")
+                            st.text_area("Content", article['content'], height=200)
+                        
+                        with col2:
+                            if st.button("Publish to WordPress", key=f"publish_{article['id']}"):
+                                if st.session_state.wordpress_api:
+                                    try:
+                                        response = st.session_state.wordpress_api.create_post(article)
+                                        st.success(f"Published to WordPress! Post ID: {response['id']}")
+                                    except Exception as e:
+                                        st.error(f"Failed to publish: {str(e)}")
+                                else:
+                                    st.warning("Please configure WordPress site in Site Management first")
+                            
+                            if st.button("Delete", key=f"delete_{article['id']}"):
+                                st.session_state.generated_articles.remove(article)
+                                st.rerun()
