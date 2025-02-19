@@ -206,7 +206,8 @@ elif st.session_state.page == "bulk article generator":
                             word_count = len(article['content'].split())
                             st.write(f"Word Count: {word_count}")
 
-                        # Check SEO optimization
+                        # Calculate word count and check SEO optimization
+                        article['word_count'] = len(article['content'].split())
                         is_seo_optimized = (
                             article['word_count'] >= 600 and
                             'keywords' in article and
