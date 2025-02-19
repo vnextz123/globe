@@ -8,6 +8,29 @@ class ContentGenerator:
         # the newest OpenAI model is "gpt-4o" which was released May 13, 2024
         self.model = "gpt-4o"
 
+    def _format_content(self, content: str) -> str:
+        """Format content with proper HTML and anchors"""
+        # Convert markdown headings to HTML with anchors
+        def heading_replace(match):
+            level = len(match.group(1))
+            text = match.group(2)
+            # Create anchor ID from text (transliterated if Hindi)
+            import re
+            anchor_id = re.sub(r'[^\w\s-]', '', text.lower())
+            anchor_id = re.sub(r'\s+', '-', anchor_id.strip())
+            return f'<h{level} id="{anchor_id}">{text}</h{level}>'
+            
+        content = re.sub(r'^(#{1,6})\s*(.+)$', heading_replace, content, flags=re.MULTILINE)
+        
+        # Convert markdown links to HTML
+        content = re.sub(
+            r'\[([^\]]+)\]\(([^\)]+)\)',
+            r'<a href="\2" target="_blank" rel="noopener">\1</a>',
+            content
+        )
+        
+        return content
+
     def generate_hindi_content(self, source_content: Dict, keywords: List[str] = None) -> Dict:
         """Generate Hindi content from source material"""
         try:
@@ -27,11 +50,15 @@ class ContentGenerator:
             Focus Keyword: {keywords[0]}
             
             Requirements:
-            1. Write entirely in Hindi (use English for technical terms if needed)
-            2. Minimum 300 words
-            3. SEO optimized with proper keyword density
-            4. Include proper HTML formatting with headings
-            5. Generate SEO meta tags in Hindi
+            1. Write entirely in Hindi using Devanagari script (use English only for technical terms)
+            2. Title must be in proper Devanagari script
+            3. Minimum 300 words
+            4. SEO optimized with proper keyword density
+            5. Use proper HTML formatting:
+               - Convert all headings to proper HTML tags (<h1>, <h2>, etc.)
+               - Create anchor IDs for table of contents using English transliteration
+               - Format external links as proper HTML <a> tags with target="_blank" and rel="noopener"
+            6. Generate SEO meta tags in Hindi
             
             Format the response as a JSON with:
             {{
@@ -50,7 +77,9 @@ class ContentGenerator:
                 response_format={"type": "json_object"}
             )
 
-            return response.choices[0].message.content
+            generated = json.loads(response.choices[0].message.content)
+            generated['content'] = self._format_content(generated['content'])
+            return json.dumps(generated)
 
         except Exception as e:
             raise Exception(f"Error generating Hindi content: {str(e)}")
