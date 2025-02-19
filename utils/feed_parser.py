@@ -24,7 +24,7 @@ class FeedParser:
 
         try:
             feed = feedparser.parse(url)
-            
+
             # Check content type and version
             if hasattr(feed, 'headers'):
                 content_type = feed.headers.get('content-type', '').lower()
@@ -46,6 +46,8 @@ class FeedParser:
                 raise Exception("No entries found in the feed. Please verify this is a valid RSS feed.")
 
             entries = []
+            seen_titles = set() #Added to track seen titles
+
             for entry in feed.entries:
                 # Extract content with fallbacks
                 content = ''
@@ -58,16 +60,20 @@ class FeedParser:
 
                 # Remove image URLs from content
                 content_without_images = re.sub(r'<img[^>]*>', '', content)
-                
-                parsed_entry = {
-                    'title': entry.get('title', ''),
-                    'link': entry.get('link', ''),
-                    'published': entry.get('published', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
-                    'summary': entry.get('summary', ''),
-                    'content': content_without_images,
-                    'source': feed.feed.get('title', 'Unknown Source')
-                }
-                entries.append(parsed_entry)
+                published = entry.get('published', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
+                # Added duplicate title check
+                if entry.get('title', '') not in seen_titles:
+                    seen_titles.add(entry.get('title', ''))
+                    parsed_entry = {
+                        'title': entry.get('title', ''),
+                        'link': entry.get('link', ''),
+                        'published': published,
+                        'summary': entry.get('summary', ''),
+                        'content': content_without_images,
+                        'source': feed.feed.get('title', 'Unknown Source')
+                    }
+                    entries.append(parsed_entry)
 
             return entries
 

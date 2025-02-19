@@ -49,14 +49,17 @@ class ContentGenerator:
                 keywords = [keyword_response.choices[0].message.content.strip()]
 
             prompt = f"""
-            Create a unique Hindi blog post based on this content:
+            Create a unique Hindi article based on this content:
             Title: {source_content['title']}
             Source Content: {source_content['content']}
             Focus Keyword: {keywords[0]}
 
             Requirements:
-            1. Write entirely in Hindi using Devanagari script (use English only for technical terms)
-            2. Title must be in proper Devanagari script and closely match the original English title in meaning
+            1. Write entirely in Hindi using Devanagari script (use English only for unavoidable technical terms)
+            2. For news articles:
+               - Title MUST be in Hindi/Devanagari script
+               - Title should be a direct translation of the original title, maintaining factual accuracy
+               - No clickbait or blog-style formatting (avoid "X facts about", "Y ways to", etc.)
             3. Minimum 300 words
             4. SEO optimized with proper keyword density
             5. Use proper HTML formatting:
