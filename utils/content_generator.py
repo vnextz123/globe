@@ -68,16 +68,19 @@ class ContentGenerator:
                 keywords = [keyword_response.choices[0].message.content.strip()]
 
             prompt = f"""
-            Create an SEO-optimized blog post based on this content:
+            Create an SEO-optimized {article_type} in {language} based on this content:
             Title: {source_content['title']}
             Source Content: {source_content['content']}
             Focus Keyword: {keywords[0] if keywords else ''}
+            Article Type: {article_type}  # news, review, or blog
+            Include TOC: {include_toc}    # true/false
             
             Requirements:
             1. Title must:
-               - Be in Hindi
-               - Include focus keyword near beginning
+               - Match the article type (news: factual; review: evaluative; blog: engaging)
+               - Preserve the original meaning and context
                - Be 50-60 characters long
+               - For news articles: keep close to original title
                
             2. Meta Description must:
                - Be in Hindi

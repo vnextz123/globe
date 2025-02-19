@@ -143,6 +143,10 @@ elif st.session_state.page == "bulk article generator":
 
         # Language Selection
         target_language = st.selectbox("Target Language", ["English", "Hindi", "Spanish"])
+        
+        # Article Type Selection
+        article_type = st.selectbox("Article Type", ["News", "Review", "Blog Post"])
+        include_toc = st.checkbox("Include Table of Contents", value=False)
 
         # Generation Settings
         with st.expander("Advanced Settings"):
