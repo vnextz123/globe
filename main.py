@@ -120,6 +120,17 @@ elif st.session_state.page == "bulk article generator":
     else:
         selected_site = st.selectbox("Select Site", list(st.session_state.site_config.keys()))
         config = st.session_state.site_config[selected_site]
+        
+        # Initialize WordPress API when site is selected
+        if selected_site:
+            try:
+                st.session_state.wordpress_api = WordPressAPI(
+                    config['wp_url'],
+                    config['wp_username'],
+                    config['wp_password']
+                )
+            except Exception as e:
+                st.error(f"Error connecting to WordPress: {str(e)}")
 
         # Content Source Selection
         source_type = st.radio("Content Source", ["RSS Feeds", "Google Trends", "Custom Topics"])
@@ -247,8 +258,10 @@ elif st.session_state.page == "bulk article generator":
                             if isinstance(generated, str):
                                 generated = json.loads(generated)
 
+                            # Generate unique ID using timestamp
+                            import time
                             new_article = {
-                                'id': len(st.session_state.generated_articles) + 1,
+                                'id': int(time.time() * 1000),
                                 'title': generated['title'],
                                 'content': generated['content'],
                                 'status': 'draft',
