@@ -13,21 +13,21 @@ class ContentGenerator:
 
     def _format_content(self, content: str) -> str:
         """Format content with proper HTML for WordPress"""
-        # Remove any remaining markdown heading symbols
-        content = re.sub(r'^###\s+(.+)$', r'<h3>\1</h3>', content, flags=re.MULTILINE)
-        content = re.sub(r'^##\s+(.+)$', r'<h2>\1</h2>', content, flags=re.MULTILINE)
+        # Convert markdown headings to HTML without leaving symbols
+        content = re.sub(r'(?m)^###\s*(.+)$', r'<h3>\1</h3>', content)
+        content = re.sub(r'(?m)^##\s*(.+)$', r'<h2>\1</h2>', content)
         
-        # Clean up link formatting
+        # Clean up link formatting - remove labels and convert to HTML
         content = re.sub(
-            r'\*\*(?:Internal|External) Link:\*\*\s*\[([^\]]+)\]\(([^\)]+)\)',
+            r'\[([^\]]+)\]\(([^\)]+)\)',
             r'<a href="\2" target="_blank" rel="noopener noreferrer">\1</a>',
             content
         )
         
-        # Remove image URL text but keep the alt text
+        # Handle images without placeholders
         content = re.sub(
-            r'!\[([^\]]+)\]\([^\)]+\s*(?:"([^"]*)")?\)',
-            r'<!-- wp:image {"alt":"\1"} -->',
+            r'!\[([^\]]+)\]\([^\)]+\)',
+            r'<img src="\2" alt="\1">',
             content
         )
         
@@ -55,20 +55,20 @@ class ContentGenerator:
             Focus Keyword: {keywords[0]}
 
             Requirements:
-            1. Write entirely in Hindi using Devanagari script (use English only for unavoidable technical terms)
+            1. Write entirely in Hindi using Devanagari script
             2. For news articles:
-               - Title MUST be in Hindi/Devanagari script
-               - Title should be a direct translation of the original title, maintaining factual accuracy
-               - No clickbait or blog-style formatting (avoid "X facts about", "Y ways to", etc.)
+               - Title MUST be a direct Hindi translation of the original title
+               - Preserve key terms/names in both Hindi and English if needed
+               - Keep title factual and descriptive, no clickbait
+               - Title should closely match the original meaning
             3. Minimum 300 words
             4. SEO optimized with proper keyword density
-            5. Use proper HTML formatting:
-               - Use proper HTML heading tags: <h2>, <h3> (no markdown symbols)
-               - Format links as clean HTML anchors: <a href="url">text</a>
-               - DO NOT include labels like "Internal Link" or "External Link"
-               - DO NOT include visible image URLs
-               - Include noopener and noreferrer for external links
-            6. Generate SEO meta tags in Hindi
+            5. Formatting:
+               - Use HTML heading tags without markdown: <h2>heading</h2>
+               - Links format: <a href="url" target="_blank" rel="noopener noreferrer">text</a>
+               - Remove all labels (Internal/External Link, Image placeholders)
+               - Clean paragraph structure with <p> tags
+            6. All metadata (title, description, keywords) in Hindi
 
             Format the response as a JSON with:
             {{
