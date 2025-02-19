@@ -55,7 +55,7 @@ class ContentGenerator:
         except Exception as e:
             raise Exception(f"Error generating Hindi content: {str(e)}")
 
-    def generate_content(self, source_content: Dict, keywords: List[str] = None) -> Dict:
+    def generate_content(self, source_content: Dict, keywords: List[str] = None, article_type: str = "news", language: str = "English") -> Dict:
         """Generate unique content from source material"""
         try:
             # Auto-generate focus keyword if none provided
