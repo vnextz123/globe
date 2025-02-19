@@ -7,11 +7,10 @@ import signal
 import sys
 
 # Configure Streamlit for Replit
-os.environ['STREAMLIT_SERVER_PORT'] = '3000'
-os.environ['STREAMLIT_SERVER_ADDRESS'] = '0.0.0.0'
-os.environ['STREAMLIT_SERVER_HEADLESS'] = 'true'
-os.environ['STREAMLIT_SERVER_FILE_WATCHER_TYPE'] = 'none'
-os.environ['STREAMLIT_BROWSER_GATHER_USAGE_STATS'] = 'false'
+import streamlit.web.bootstrap as bootstrap
+from streamlit.web.server.server import Server
+Server.address = '0.0.0.0'
+Server.port = 3000
 
 import streamlit as st
 
