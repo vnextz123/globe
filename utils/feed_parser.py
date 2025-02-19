@@ -2,6 +2,7 @@ import feedparser
 from typing import List, Dict
 import datetime
 import re
+import re
 from urllib.parse import urlparse
 
 class FeedParser:
@@ -55,12 +56,15 @@ class FeedParser:
                 elif 'description' in entry:
                     content = entry.description
 
+                # Remove image URLs from content
+                content_without_images = re.sub(r'<img[^>]*>', '', content)
+                
                 parsed_entry = {
                     'title': entry.get('title', ''),
                     'link': entry.get('link', ''),
                     'published': entry.get('published', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
                     'summary': entry.get('summary', ''),
-                    'content': content,
+                    'content': content_without_images,
                     'source': feed.feed.get('title', 'Unknown Source')
                 }
                 entries.append(parsed_entry)
