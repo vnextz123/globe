@@ -1,6 +1,9 @@
 import os
 from openai import OpenAI
 from typing import Dict, List, Optional
+import re
+from unidecode import unidecode
+import json
 
 class ContentGenerator:
     def __init__(self):
@@ -9,26 +12,30 @@ class ContentGenerator:
         self.model = "gpt-4o"
 
     def _format_content(self, content: str) -> str:
-        """Format content with proper HTML and anchors"""
+        """Format content with proper HTML and anchors for WordPress"""
         # Convert markdown headings to HTML with anchors
         def heading_replace(match):
             level = len(match.group(1))
             text = match.group(2)
-            # Create anchor ID from text (transliterated if Hindi)
-            import re
-            anchor_id = re.sub(r'[^\w\s-]', '', text.lower())
+            # Transliterate Hindi text for anchor ID
+            anchor_text = unidecode(text)
+            anchor_id = re.sub(r'[^\w\s-]', '', anchor_text.lower())
             anchor_id = re.sub(r'\s+', '-', anchor_id.strip())
             return f'<h{level} id="{anchor_id}">{text}</h{level}>'
-            
+
+        # Convert markdown headings to HTML with anchors
         content = re.sub(r'^(#{1,6})\s*(.+)$', heading_replace, content, flags=re.MULTILINE)
-        
-        # Convert markdown links to HTML
+
+        # Escape special characters for WordPress
+        content = content.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;').replace("'", '&#39;')
+
+        # Convert markdown links to HTML, ensuring proper escaping for WordPress
         content = re.sub(
             r'\[([^\]]+)\]\(([^\)]+)\)',
-            r'<a href="\2" target="_blank" rel="noopener">\1</a>',
+            r'<a href="\2" target="_blank" rel="noopener noreferrer">\1</a>',
             content
         )
-        
+
         return content
 
     def generate_hindi_content(self, source_content: Dict, keywords: List[str] = None) -> Dict:
@@ -48,18 +55,18 @@ class ContentGenerator:
             Title: {source_content['title']}
             Source Content: {source_content['content']}
             Focus Keyword: {keywords[0]}
-            
+
             Requirements:
             1. Write entirely in Hindi using Devanagari script (use English only for technical terms)
-            2. Title must be in proper Devanagari script
+            2. Title must be in proper Devanagari script and closely match the original English title in meaning.
             3. Minimum 300 words
             4. SEO optimized with proper keyword density
-            5. Use proper HTML formatting:
+            5. Use proper HTML formatting suitable for WordPress: escape special characters (&, <, >, ", ')
                - Convert all headings to proper HTML tags (<h1>, <h2>, etc.)
                - Create anchor IDs for table of contents using English transliteration
-               - Format external links as proper HTML <a> tags with target="_blank" and rel="noopener"
+               - Format external links as proper HTML <a> tags with target="_blank" and rel="noopener noreferrer"
             6. Generate SEO meta tags in Hindi
-            
+
             Format the response as a JSON with:
             {{
                 "title": "Hindi SEO title with keywords",
@@ -103,39 +110,39 @@ class ContentGenerator:
             Focus Keyword: {keywords[0] if keywords else ''}
             Article Type: {article_type}  # news, review, or blog
             Include TOC: {include_toc}    # true/false
-            
+
             Requirements:
             1. Title must:
                - Match the article type (news: factual; review: evaluative; blog: engaging)
                - Preserve the original meaning and context
                - Be 50-60 characters long
                - For news articles: keep close to original title
-               
+
             2. Meta Description must:
                - Be in Hindi
                - Include focus keyword near beginning  
                - Be 150-160 characters long
                - Be compelling and encourage clicks
-               
+
             3. URL slug must:
                - Use English transliteration 
                - Include focus keyword
                - Use hyphens between words
                - Be concise (3-5 words maximum)
-               
+
             4. Content must:
                - Be minimum 600 words in Hindi
                - Include focus keyword in first paragraph
                - Have proper keyword density (1-3%)
                - Use proper heading hierarchy (H1, H2, H3)
-            
+
             Follow these SEO requirements strictly:
             1. Title must:
                - Include focus keyword near the beginning
                - Contain a number (e.g., "5 Ways...", "7 Tips...")
                - Include a power word (e.g., amazing, exclusive, proven)
                - Include a sentiment word (e.g., best, great)
-               
+
             2. Content must:
                - Be minimum 600 words
                - Include focus keyword in first paragraph
@@ -145,10 +152,10 @@ class ContentGenerator:
                - Include table of contents if requested
                - Include both internal and external dofollow links
                - Include images with focus keyword in alt text
-               
+
             3. Meta description must include focus keyword
             4. URL slug must include focus keyword and be concise
-            
+
             Please format the response as a JSON object with the following structure:
             {{
                 "title": "SEO optimized title meeting all requirements",
