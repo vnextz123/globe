@@ -12,4 +12,4 @@ author = 39800353
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python -m streamlit run main.py"
+args = "python -m streamlit run main.py --server.address 0.0.0.0 --server.port 3000"
