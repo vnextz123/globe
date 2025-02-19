@@ -242,7 +242,7 @@ elif st.session_state.page == "bulk article generator":
                             generated = st.session_state.content_generator.generate_content({
                                 'title': article['title'],
                                 'content': article['content']
-                            }, article_type=article_type.lower(), language=target_language)
+                            }, article_type=article_type.lower(), language=target_language, include_toc=include_toc)
 
                             if isinstance(generated, str):
                                 generated = json.loads(generated)
