@@ -1,20 +1,12 @@
+
 import streamlit as st
 import json
 import datetime
 from utils.feed_parser import FeedParser
 import os
-import signal
 import sys
 
 # Configure Streamlit for Replit
-import streamlit.web.bootstrap as bootstrap
-from streamlit.web.server.server import Server
-Server.address = '0.0.0.0'
-Server.port = 3000
-
-import streamlit as st
-
-# Set Streamlit configuration
 st.set_page_config(
     page_title="AI Content Generator",
     layout="wide",
@@ -48,8 +40,6 @@ if 'site_config' not in st.session_state:
     st.session_state.site_config = {}
 if 'generated_articles' not in st.session_state:
     st.session_state.generated_articles = []
-
-# Streamlit handles process management internally
 
 # Navigation
 st.sidebar.title("Navigation")
