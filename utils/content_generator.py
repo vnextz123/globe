@@ -12,30 +12,28 @@ class ContentGenerator:
         self.model = "gpt-4o"
 
     def _format_content(self, content: str) -> str:
-        """Format content with proper HTML and anchors for WordPress"""
-        # Convert markdown headings to HTML with anchors
-        def heading_replace(match):
-            level = len(match.group(1))
-            text = match.group(2)
-            # Transliterate Hindi text for anchor ID
-            anchor_text = unidecode(text)
-            anchor_id = re.sub(r'[^\w\s-]', '', anchor_text.lower())
-            anchor_id = re.sub(r'\s+', '-', anchor_id.strip())
-            return f'<h{level} id="{anchor_id}">{text}</h{level}>'
-
-        # Convert markdown headings to HTML with anchors
-        content = re.sub(r'^(#{1,6})\s*(.+)$', heading_replace, content, flags=re.MULTILINE)
-
-        # Escape special characters for WordPress
-        content = content.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;').replace("'", '&#39;')
-
-        # Convert markdown links to HTML, ensuring proper escaping for WordPress
+        """Format content with proper HTML for WordPress"""
+        # Remove any remaining markdown heading symbols
+        content = re.sub(r'^###\s+(.+)$', r'<h3>\1</h3>', content, flags=re.MULTILINE)
+        content = re.sub(r'^##\s+(.+)$', r'<h2>\1</h2>', content, flags=re.MULTILINE)
+        
+        # Clean up link formatting
         content = re.sub(
-            r'\[([^\]]+)\]\(([^\)]+)\)',
+            r'\*\*(?:Internal|External) Link:\*\*\s*\[([^\]]+)\]\(([^\)]+)\)',
             r'<a href="\2" target="_blank" rel="noopener noreferrer">\1</a>',
             content
         )
-
+        
+        # Remove image URL text but keep the alt text
+        content = re.sub(
+            r'!\[([^\]]+)\]\([^\)]+\s*(?:"([^"]*)")?\)',
+            r'<!-- wp:image {"alt":"\1"} -->',
+            content
+        )
+        
+        # Escape special characters
+        content = content.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;').replace("'", '&#39;')
+        
         return content
 
     def generate_hindi_content(self, source_content: Dict, keywords: List[str] = None) -> Dict:
@@ -58,13 +56,15 @@ class ContentGenerator:
 
             Requirements:
             1. Write entirely in Hindi using Devanagari script (use English only for technical terms)
-            2. Title must be in proper Devanagari script and closely match the original English title in meaning.
+            2. Title must be in proper Devanagari script and closely match the original English title in meaning
             3. Minimum 300 words
             4. SEO optimized with proper keyword density
-            5. Use proper HTML formatting suitable for WordPress: escape special characters (&, <, >, ", ')
-               - Convert all headings to proper HTML tags (<h1>, <h2>, etc.)
-               - Create anchor IDs for table of contents using English transliteration
-               - Format external links as proper HTML <a> tags with target="_blank" and rel="noopener noreferrer"
+            5. Use proper HTML formatting:
+               - Use proper HTML heading tags: <h2>, <h3> (no markdown symbols)
+               - Format links as clean HTML anchors: <a href="url">text</a>
+               - DO NOT include labels like "Internal Link" or "External Link"
+               - DO NOT include visible image URLs
+               - Include noopener and noreferrer for external links
             6. Generate SEO meta tags in Hindi
 
             Format the response as a JSON with:
