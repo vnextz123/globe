@@ -7,9 +7,14 @@ import signal
 import sys
 
 # Set environment variables for Streamlit configuration
-os.environ['STREAMLIT_SERVER_PORT'] = '8501'
+os.environ['STREAMLIT_SERVER_PORT'] = '3000'
 os.environ['STREAMLIT_SERVER_ADDRESS'] = '0.0.0.0'
 os.environ['STREAMLIT_SERVER_HEADLESS'] = 'true'
+
+# Configure Streamlit to run on Replit
+from streamlit.web.server import Server
+Server.address = '0.0.0.0'
+Server.port = 3000
 
 import streamlit as st
 
